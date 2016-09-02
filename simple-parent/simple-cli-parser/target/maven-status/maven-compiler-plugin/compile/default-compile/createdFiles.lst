@@ -1,0 +1,15 @@
+de/kazkazi/simple/cliParser/simpleRPCParser$QualifiedNameContext.class
+de/kazkazi/simple/cliParser/simpleRPCParser$ArrayContext.class
+de/kazkazi/simple/cliParser/simpleRPCParser.class
+de/kazkazi/simple/cliParser/simpleRPCLexer.class
+de/kazkazi/simple/cliParser/simpleRPCParser$ValueContext.class
+de/kazkazi/simple/cliParser/simpleRPCParser$HelpCommandContext.class
+de/kazkazi/simple/cliParser/simpleRPCParser$PairContext.class
+de/kazkazi/simple/cliParser/simpleRPCListener.class
+de/kazkazi/simple/cliParser/simpleRPCParser$CompilationUnitContext.class
+de/kazkazi/simple/cliParser/simpleRPCBaseListener.class
+de/kazkazi/simple/cliParser/simpleRPCParser$CallCommandContext.class
+de/kazkazi/simple/cliParser/simpleRPCParser$CallInputContext.class
+de/kazkazi/simple/cliParser/simpleRPCParser$ListCommandContext.class
+de/kazkazi/simple/cliParser/simpleRPCParser$JsonContext.class
+de/kazkazi/simple/cliParser/simpleRPCParser$ObjectContext.class

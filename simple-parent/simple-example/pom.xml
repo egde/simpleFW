@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>simple-example</artifactId>
+  <name>simple-example</name>
+  <description>A Demonstrator</description>
+  
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>de.kazkazi.simple</groupId>
+  		<artifactId>simple-lib</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
+  <parent>
+  	<groupId>de.kazkazi.simple</groupId>
+  	<artifactId>simple-parent</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  </parent>
+</project>
