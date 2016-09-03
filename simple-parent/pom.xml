@@ -6,13 +6,14 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>simple-parent</name>
+	
 	<modules>
-		<module>simple-cli-parser</module>
 		<module>simple</module>
-		<module>simple-lib</module>
+		<module>simple-cli-parser</module>
 		<module>simple-example</module>
+		<module>simple-lib</module>
 	</modules>
-
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -26,4 +27,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
