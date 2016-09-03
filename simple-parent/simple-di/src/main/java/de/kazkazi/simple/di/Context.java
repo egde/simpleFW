@@ -1,5 +1,6 @@
 package de.kazkazi.simple.di;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
@@ -100,6 +101,33 @@ public class Context {
 		postponedClass.getRequiredSingletonIDs().clear();
 		
 		Map<Method, Object> dependencies = new LinkedHashMap<Method, Object>();
+		Field[] fields = singletonClass.getDeclaredFields();
+		for (Field field : fields) {
+			Inject[] injects = field.getAnnotationsByType(Inject.class);
+			if (injects.length == 0) {
+				continue;
+			}
+			
+			//get the setter
+			String fieldName = field.getName();
+			String setterName = String.format("set%s%s", fieldName.substring(0,1).toUpperCase(), fieldName.substring(1));
+			Method setterMethod = null;
+			Class<?> parameterType = field.getType();
+			try {
+				setterMethod = singletonClass.getMethod(setterName, parameterType);
+			} catch (NoSuchMethodException | SecurityException e) {
+				throw new IllegalArgumentException(String.format("Error constructing singleton %s: Setter for field %s is not available.", singletonId, fieldName));
+			}
+			
+			String singletonIdToSearchFor = detQualifiedName(parameterType);
+			Object requiredSingleton = singletons.get(singletonIdToSearchFor);
+			if (requiredSingleton != null) {
+				dependencies.put(setterMethod, requiredSingleton);
+			} else {
+				postponedClass.addRequiredSingletonID(singletonIdToSearchFor);
+			}
+		}
+		
 		Method[] methods = singletonClass.getDeclaredMethods();
 		for (Method method : methods) {
 			Inject[] injects = method.getAnnotationsByType(Inject.class);
@@ -122,7 +150,6 @@ public class Context {
 			if (requiredSingleton != null) {
 				dependencies.put(method, requiredSingleton);
 			} else {
-				logger.info(String.format("Postponing the construction of %s", singletonId));
 				postponedClass.addRequiredSingletonID(singletonIdToSearchFor);
 			}
 		}
@@ -130,6 +157,7 @@ public class Context {
 		Map<Method, Object> result;
 		if (postponedClass.getRequiredSingletonIDs().size() > 0) {
 			if (! isInLaterContruction) {
+				logger.info(String.format("Postponing the construction of %s", singletonId));
 				laterConstruction.add(postponedClass);
 			}
 			result = null;
