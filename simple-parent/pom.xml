@@ -8,6 +8,9 @@
 	<name>simple-parent</name>
 	<modules>
 		<module>simple-cli-parser</module>
+		<module>simple</module>
+		<module>simple-lib</module>
+		<module>simple-example</module>
 	</modules>
 
 	<build>
