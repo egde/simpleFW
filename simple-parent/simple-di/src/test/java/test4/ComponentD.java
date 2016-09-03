@@ -1,9 +1,8 @@
-package test2;
+package test4;
 
 import javax.inject.Singleton;
 
 @Singleton
-public class ComponentB {
+public class ComponentD {
 
-	
 }

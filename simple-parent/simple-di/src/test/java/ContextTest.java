@@ -54,4 +54,24 @@ public class ContextTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void test4() {
+		Context c = new Context("test4");
+		try {
+			c.init();
+			assertNotNull(c.getSingleton("test4.ComponentA"));
+			test4.ComponentB componentB = ((test4.ComponentA)(c.getSingleton("test4.ComponentA"))).getComponentB();
+			assertNotNull(componentB);
+			assertNotNull(c.getSingleton("test4.ComponentB"));
+			test4.ComponentC componentC = ((test4.ComponentB)(c.getSingleton("test4.ComponentB"))).getComponentC();
+			assertNotNull(componentC);
+			assertNotNull(c.getSingleton("test4.ComponentC"));
+			assertNotNull(c.getSingleton("test4.ComponentD"));
+			assertNotNull(componentC.getComponentD());
+		} catch (ReflectiveOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

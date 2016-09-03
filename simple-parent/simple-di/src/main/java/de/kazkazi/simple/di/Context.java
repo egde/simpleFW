@@ -11,12 +11,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.kazkazi.simple.di.annotations.Singleton;
 
 public class Context {
 

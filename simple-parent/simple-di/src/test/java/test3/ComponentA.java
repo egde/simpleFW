@@ -1,8 +1,8 @@
 package test3;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import de.kazkazi.simple.di.annotations.Singleton;
 
 @Singleton
 public class ComponentA {
