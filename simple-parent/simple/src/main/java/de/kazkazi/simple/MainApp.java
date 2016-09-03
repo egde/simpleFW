@@ -5,13 +5,25 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.kazkazi.simple.di.Context;
 
 public class MainApp {
 
+	private static Logger logger = LoggerFactory.getLogger(MainApp.class);
+	
 	public static void main(String[] args) {
-		MethodManager methodManager = new MethodManager();
+		Context context = new Context("de.kazkazi");
+		try {
+			context.init();
+		} catch (ReflectiveOperationException e) {
+			logger.error("Startup failed:", e);
+		}
+		MethodManager methodManager = (MethodManager) context.getSingleton(MethodManager.class);
 		startUp(methodManager);
-		TCPServer tcpServer = new TCPServer(methodManager);
+		TCPServer tcpServer = (TCPServer) context.getSingleton(TCPServer.class);
 		tcpServer.start();		
 	}
 

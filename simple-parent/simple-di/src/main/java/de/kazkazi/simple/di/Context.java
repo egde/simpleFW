@@ -176,6 +176,10 @@ public class Context {
 		return clazz.getCanonicalName();
 	}
 	
+	public Object getSingleton(Class<?> clazz) {
+		return getSingleton(clazz.getCanonicalName());
+	}
+	
 	public Object getSingleton(String singletonId) {
 		if ( !singletons.containsKey(singletonId) ) {
 			throw new IllegalArgumentException(String.format("Singleton with the id %s is not available in this context.", singletonId));

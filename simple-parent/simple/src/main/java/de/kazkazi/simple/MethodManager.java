@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +16,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import de.kazkazi.simple.responses.Fault;
+import de.kazkazi.simple.responses.InvocationFault;
 import de.kazkazi.simple.responses.MethodNotRegisteredFault;
 import de.kazkazi.simple.responses.SuccessResponse;
 
+@Singleton
 public class MethodManager {
 	
 	private ConcurrentHashMap<String, Method> methodList;
@@ -62,7 +67,9 @@ public class MethodManager {
 				result = method.invoke(inputValues);
 			}
 		} catch (Exception e) {
-			logger.error(String.format("Error invoking method '%s'", methodName), e);
+			String message = String.format("Error invoking method '%s'", methodName);
+			logger.error(message, e);
+			return gson.toJson(new InvocationFault(message, e));
 		}
 		
 		return gson.toJson(new SuccessResponse(result));

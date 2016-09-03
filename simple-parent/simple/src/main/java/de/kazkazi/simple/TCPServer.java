@@ -9,24 +9,39 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
+import com.google.gson.Gson;
 
+import de.kazkazi.simple.cliparser.antlr.SimpleRPCLexer;
+import de.kazkazi.simple.cliparser.antlr.SimpleRPCParser;
+import de.kazkazi.simple.parsing.SimpleRPCParserListener;
+import de.kazkazi.simple.parsing.ThrowingErrorListener;
+import de.kazkazi.simple.responses.CommandNotRecognizedFault;
 
+@Singleton
 public class TCPServer {
 
 	private int port = 9999;
 	private boolean isRunning = false;
-	private int nThreads = 1;
+	private int nThreads = 10;
 
 	private static Logger logger = LoggerFactory.getLogger(TCPServer.class);
 	
-	private MethodManager methodManager;
+	@Inject
+	private SimpleRPCParserListener parserListener;
+	private Gson gson = new Gson();
 	
-	public TCPServer(MethodManager methodManager) {
-		this.methodManager = methodManager;
+	public TCPServer() {
 	}
 	
 	public TCPServer(int port) {
@@ -59,23 +74,23 @@ public class TCPServer {
 		
 								String clientMessage = inFromClient.readLine();
 								logger.debug(String.format("Received from %sd: %s", connectionSocket.getInetAddress(), clientMessage));
-								Parser parser = new Parser(clientMessage);
-								parser.parse();
-								String methodName = parser.getMethodName();
-								String command = parser.getCommand();
-								String response = null;
-								switch (command.toUpperCase()) {
-									case "CALL":
-										response = methodManager.invoke(methodName, null);
-										break;
-									case "LIST":
-										response = methodManager.listMethods();
-										break;
-									default :
-										
+								
+								SimpleRPCLexer lexer = new SimpleRPCLexer(new ANTLRInputStream(clientMessage));
+								TokenStream tokens = new CommonTokenStream(lexer);
+								SimpleRPCParser parser = new SimpleRPCParser(tokens);
+								parser.removeErrorListeners();
+								parser.addErrorListener(ThrowingErrorListener.INSTANCE);
+								   
+								String response;
+								try {
+									ParseTreeWalker.DEFAULT.walk(parserListener, parser.compilationUnit());
+									response = parserListener.getResponse();
+								} catch (ParseCancellationException e) {
+									response = gson.toJson(new CommandNotRecognizedFault(e));
 								}
+								
+								response = response +"\n";
 								DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-								response = response + "\n";
 								outToClient.writeBytes(response);
 							} catch (Exception e) {
 								logger.debug("Error in the connection", e);
@@ -91,5 +106,9 @@ public class TCPServer {
 
 	public void stop() {
 		isRunning = false;
+	}
+
+	public void setParserListener(SimpleRPCParserListener parserListener) {
+		this.parserListener = parserListener;
 	}
 }
