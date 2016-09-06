@@ -67,12 +67,18 @@ public class TCPServer {
 					
 					
 					connectionExecutor.submit(() -> {
-						while (isRunning) {
+						while (isRunning && !connectionSocket.isClosed()) {
 							try {
 								BufferedReader inFromClient = new BufferedReader(
 										new InputStreamReader(connectionSocket.getInputStream()));
 		
 								String clientMessage = inFromClient.readLine();
+								//Whenever the clientMessage == null, then the connection has been closed by the client. 
+								//So we will close the connection too
+								if (clientMessage == null) {
+									connectionSocket.close();
+									break;
+								}
 								logger.debug(String.format("Received from %sd: %s", connectionSocket.getInetAddress(), clientMessage));
 								
 								SimpleRPCLexer lexer = new SimpleRPCLexer(new ANTLRInputStream(clientMessage));
@@ -94,11 +100,21 @@ public class TCPServer {
 								outToClient.writeBytes(response);
 							} catch (Exception e) {
 								logger.debug("Error in the connection", e);
+								try {
+									connectionSocket.close();
+								} catch (IOException e1) {
+									logger.error("Error while closing connection", e1);
+								}
 							}
 						}
 					});
 				} catch (Exception e) {
 					logger.error("An Error occurred in the server communication", e);
+					try {
+						serverSocket.close();
+					} catch (IOException e1) {
+						logger.error("Error while closing the server socket", e1);
+					}
 				}
 			}
 		});

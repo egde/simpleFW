@@ -5,12 +5,12 @@ import de.kazkazi.simple.lib.annotations.Endpoint;
 public class Maths {
 
 	@Endpoint
-	public Integer add(Integer a, Integer b) {
-		return a+b;
+	public Number add(Number  a, Number b) {
+		return a.doubleValue()+b.doubleValue();
 	}
 	
 	@Endpoint
-	public Integer subtract(Integer a, Integer b) {
-		return a-b;
+	public Number subtract(Number a, Number b) {
+		return a.doubleValue()-b.doubleValue();
 	}
 }

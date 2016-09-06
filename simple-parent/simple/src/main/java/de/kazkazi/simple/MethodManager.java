@@ -16,7 +16,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import de.kazkazi.simple.responses.Fault;
 import de.kazkazi.simple.responses.InvocationFault;
 import de.kazkazi.simple.responses.MethodNotRegisteredFault;
 import de.kazkazi.simple.responses.SuccessResponse;
@@ -64,7 +63,10 @@ public class MethodManager {
 					inputValues[i] = gson.fromJson(entry.getValue(), parameterTypes[i]);
 					i++;
 				}
-				result = method.invoke(inputValues);
+				if (i < parameterTypes.length) {
+					throw new IllegalArgumentException(String.format("The number of parameters provided are insufficient. Expected %d parameters but received %d parameter(s).", parameterTypes.length, i));
+				}
+				result = method.invoke(method.getDeclaringClass().newInstance(), inputValues);
 			}
 		} catch (Exception e) {
 			String message = String.format("Error invoking method '%s'", methodName);
