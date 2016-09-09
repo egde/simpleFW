@@ -13,6 +13,8 @@
 		<module>simple-example</module>
 		<module>simple-lib</module>
 		<module>simple-di</module>
+		<module>simple-http-parser</module>
+		<module>simple-client-lib</module>
 	</modules>
 
 	<build>
