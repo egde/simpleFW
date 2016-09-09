@@ -1,4 +1,9 @@
 /target/
+<<<<<<< HEAD
 /.classpath
 /.project
 /.settings/
+=======
+.project
+.classpath
+>>>>>>> branch 'master' of https://github.com/egde/simpleFW.git
